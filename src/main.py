@@ -18,9 +18,9 @@ async def get_system_info():
     Get system information including hostname and compute layer details.
     """
     return {
-        "hostname": platform.node() or "unknown",
-        "node_name": os.environ.get("NODE_NAME", "unknown"),
-        "pod_ip": os.environ.get("POD_IP", "127.0.0.1"),
+        "host": platform.node() or "unknown",
+        "node": os.environ.get("NODE_NAME", "unknown"),
+        "ip": os.environ.get("POD_IP", "127.0.0.1"),
         "platform": platform.platform(),
         "system": platform.system(),
         "release": platform.release(),

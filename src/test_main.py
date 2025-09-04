@@ -21,9 +21,9 @@ class TestSystemInfoAPI(unittest.TestCase):
         data = response.json()
 
         # Check required fields
-        self.assertIn("hostname", data)
-        self.assertIn("node_name", data)
-        self.assertIn("pod_ip", data)
+        self.assertIn("host", data)
+        self.assertIn("node", data)
+        self.assertIn("ip", data)
         self.assertIn("platform", data)
         self.assertIn("system", data)
         self.assertIn("release", data)
@@ -62,8 +62,8 @@ class TestSystemInfoAPI(unittest.TestCase):
 
             data = response.json()
 
-            self.assertEqual(data["node_name"], test_env["NODE_NAME"])
-            self.assertEqual(data["pod_ip"], test_env["POD_IP"])
+            self.assertEqual(data["node"], test_env["NODE_NAME"])
+            self.assertEqual(data["ip"], test_env["POD_IP"])
         finally:
             # Restore original environment
             for key, value in original_env.items():
@@ -81,10 +81,10 @@ class TestSystemInfoAPI(unittest.TestCase):
         data = response.json()
 
         # Check host and hostname exist
-        self.assertIn("hostname", data)
+        self.assertIn("host", data)
 
         # hostname should always be a string (platform.node() or "unknown")
-        hostname = data["hostname"]
+        hostname = data["host"]
         self.assertIsInstance(hostname, str)
         self.assertGreater(len(hostname), 0)  # Should not be empty
 
