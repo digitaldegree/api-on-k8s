@@ -23,10 +23,7 @@ help:
 all: requirements lint test build
 
 development-requirements: requirements
-	pip install --quiet --upgrade --requirement src/development-requirements.txt
-
-requirements:
-	pip install --quiet --upgrade --requirement src/requirements.txt
+	pip install --quiet --upgrade --requirement development-requirements.txt
 
 pre-commit-install: development-requirements
 	pre-commit install
@@ -43,24 +40,24 @@ x_pre-commit-clean:
 	pre-commit uninstall
 
 lint:
-	flake8 --ignore=E501,E231 ./src/*.py
-	pylint --errors-only --disable=C0301 ./src/*.py
-	black --diff ./src/*.py
-	isort --check-only --diff ./src/*.py
+	flake8 --ignore=E501,E231 *.py
+	pylint --errors-only --disable=C0301 *.py
+	black --diff *.py
+	isort --check-only --diff *.py
 
 fmt: black isort
 
 black:
-	black src/*.py
+	black *.py
 
 isort:
-	isort src/*.py
+	isort *.py
 
 test:
-	python -m unittest --verbose --failfast ./src
+	python -m unittest --verbose --failfast
 
 build: lint test
-	docker build --tag $(APP):$(TAG) ./src
+	docker build --tag $(APP):$(TAG) .
 
 clean:
 	docker container stop $(APP) || true
