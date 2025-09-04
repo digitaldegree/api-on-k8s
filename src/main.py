@@ -1,6 +1,7 @@
 import os
 import platform
 import socket
+import uuid
 from datetime import datetime, timezone
 from typing import Any, Dict
 
@@ -20,6 +21,12 @@ async def get_system_info():
     """
     return {
         "hostname": os.environ.get("HOSTNAME", socket.gethostname()),
+        "pod_name": os.environ.get("POD_NAME", "unknown"),
+        "pod_ip": os.environ.get("POD_IP", socket.gethostbyname(socket.gethostname())),
+        "node_name": os.environ.get("NODE_NAME", "unknown"),
+        "instance_id": str(uuid.uuid4())[
+            :8
+        ],  # Short unique ID for this container instance
         "platform": platform.platform(),
         "system": platform.system(),
         "release": platform.release(),
@@ -28,13 +35,6 @@ async def get_system_info():
         "processor": platform.processor(),
         "python_version": platform.python_version(),
         "timestamp": datetime.now(timezone.utc).isoformat(),
-        "environment": {
-            "node_name": os.environ.get("NODE_NAME", "unknown"),
-            "pod_ip": os.environ.get("POD_IP", "unknown"),
-            "pod_name": os.environ.get("POD_NAME", "unknown"),
-            "pod_namespace": os.environ.get("POD_NAMESPACE", "unknown"),
-            "service_account": os.environ.get("SERVICE_ACCOUNT", "unknown"),
-        },
     }
 
 

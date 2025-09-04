@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+  labels:
+    app: api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/digitaldegree/api-on-k8s:b685770
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+
+          resources:
+            limits:
+              memory: "500Mi"  # If container uses over 500MB it is killed (OOM)
+            requests:
+              memory: "250Mi"  # Request a node where 250MB is available
+              cpu: "250m"      # Request a node where 1/4 vCPU is available
+
+          securityContext:
+            allowPrivilegeEscalation: false # prevent sudo, etc.
+            privileged: false               # prevent acting like host root
+
+      terminationGracePeriodSeconds: 30 # default is 30
+
+      # per-pod security context
+      # enable seccomp and force non-root user
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault   # enable seccomp and the runtimes default profile
+        runAsUser: 1001          # hardcode user to non-root if not set in Dockerfile
+        runAsGroup: 1001         # hardcode group to non-root if not set in Dockerfile
+        runAsNonRoot: true       # hardcode to non-root. Redundant to above if Dockerfile is set USER 1000
