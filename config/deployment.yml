@@ -17,10 +17,15 @@ spec:
       containers:
         - name: api
           image: ghcr.io/digitaldegree/api-on-k8s:f87394a9c9b94fc8c4c12a3ab70bb1779deb2ba0
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
               protocol: TCP
           env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
             - name: POD_NAME
               valueFrom:
                 fieldRef:
@@ -29,10 +34,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-            - name: NODE_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
 
           readinessProbe:
             httpGet:

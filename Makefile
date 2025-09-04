@@ -20,16 +20,18 @@ help:
 	@echo "  build                    - build docker container"
 	@echo "  clean                    - clean up workspace and containers"
 
-all: requirements lint test build
+all: requirements pre-commit-run test build
 
-pre-commit-install: development-requirements
+setup: development-requirements pre-commit-install
+
+pre-commit-install:
 	pre-commit install
 	detect-secrets scan > .secrets.baseline
 
-pre-commit-update: development-requirements
+pre-commit-update:
 	pre-commit autoupdate
 
-pre-commit-run: development-requirements
+pre-commit-run:
 	pre-commit run --all-files
 
 x_pre-commit-clean:

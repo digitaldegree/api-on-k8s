@@ -1,6 +1,5 @@
 import os
 import platform
-import uuid
 from datetime import datetime, timezone
 from typing import Any, Dict
 
@@ -19,12 +18,11 @@ async def get_system_info():
     Get system information including hostname and compute layer details.
     """
     return {
+        "host": os.environ.get("HOSTNAME"),
+        "hostname": platform.node() or "unknown",
         "node_name": os.environ.get("NODE_NAME", "unknown"),
         "pod_name": os.environ.get("POD_NAME", "unknown"),
         "pod_ip": os.environ.get("POD_IP", "127.0.0.1"),
-        "instance_id": str(uuid.uuid4())[
-            :8
-        ],  # Short unique ID for this container instance
         "platform": platform.platform(),
         "system": platform.system(),
         "release": platform.release(),

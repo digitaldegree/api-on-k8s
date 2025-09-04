@@ -21,10 +21,11 @@ class TestSystemInfoAPI(unittest.TestCase):
         data = response.json()
 
         # Check required fields
+        self.assertIn("host", data)
+        self.assertIn("hostname", data)
         self.assertIn("node_name", data)
         self.assertIn("pod_name", data)
         self.assertIn("pod_ip", data)
-        self.assertIn("instance_id", data)
         self.assertIn("platform", data)
         self.assertIn("system", data)
         self.assertIn("release", data)
@@ -46,6 +47,7 @@ class TestSystemInfoAPI(unittest.TestCase):
         """Test that Kubernetes environment variables are included."""
         # Set test environment variables
         test_env = {
+            "HOSTNAME": "test-host",
             "NODE_NAME": "test-node",
             "POD_NAME": "test-pod",
             "POD_IP": "10.0.0.1",
@@ -63,6 +65,7 @@ class TestSystemInfoAPI(unittest.TestCase):
 
             data = response.json()
 
+            self.assertEqual(data["host"], test_env["HOSTNAME"])
             self.assertEqual(data["node_name"], test_env["NODE_NAME"])
             self.assertEqual(data["pod_name"], test_env["POD_NAME"])
             self.assertEqual(data["pod_ip"], test_env["POD_IP"])
@@ -75,19 +78,26 @@ class TestSystemInfoAPI(unittest.TestCase):
                 else:
                     os.environ[key] = value
 
-    def test_instance_id_uniqueness(self):
-        """Test that instance_id is generated and has correct format."""
+    def test_host_and_hostname_fields(self):
+        """Test that host and hostname fields are present and have correct format."""
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
 
         data = response.json()
 
-        # Check instance_id exists and has correct format
-        self.assertIn("instance_id", data)
-        instance_id = data["instance_id"]
-        self.assertIsInstance(instance_id, str)
-        self.assertEqual(len(instance_id), 8)  # Should be 8 characters
-        self.assertTrue(instance_id.isalnum())  # Should be alphanumeric
+        # Check host and hostname exist
+        self.assertIn("host", data)
+        self.assertIn("hostname", data)
+
+        # host can be None if HOSTNAME env var is not set
+        host = data["host"]
+        if host is not None:
+            self.assertIsInstance(host, str)
+
+        # hostname should always be a string (platform.node() or "unknown")
+        hostname = data["hostname"]
+        self.assertIsInstance(hostname, str)
+        self.assertGreater(len(hostname), 0)  # Should not be empty
 
 
 if __name__ == "__main__":
