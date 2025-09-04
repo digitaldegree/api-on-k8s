@@ -64,6 +64,12 @@ build:
 run: build
 	docker run --rm --name $(APP) --publish 8000:8000 $(APP):$(TAG)
 
+run-package:
+	docker container stop $(APP) || true
+	docker container rm $(APP) || true
+	docker pull ghcr.io/digitaldegree/api-on-k8s:main
+	docker run --rm --name $(APP) --publish 8000:8000 ghcr.io/digitaldegree/api-on-k8s:main
+
 clean:
 	docker container stop $(APP) || true
 	docker container rm $(APP) || true
