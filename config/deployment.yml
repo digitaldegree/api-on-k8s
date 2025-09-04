@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: ghcr.io/digitaldegree/api-on-k8s:b685770
+          image: ghcr.io/digitaldegree/api-on-k8s:c0c6563
           ports:
             - containerPort: 8000
               protocol: TCP

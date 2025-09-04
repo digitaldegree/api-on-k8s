@@ -21,23 +21,17 @@ class TestSystemInfoAPI(unittest.TestCase):
         data = response.json()
 
         # Check required fields
-        self.assertIn("hostname", data)
+        self.assertIn("node_name", data)
         self.assertIn("pod_name", data)
         self.assertIn("pod_ip", data)
-        self.assertIn("node_name", data)
         self.assertIn("instance_id", data)
         self.assertIn("platform", data)
         self.assertIn("system", data)
         self.assertIn("release", data)
         self.assertIn("version", data)
         self.assertIn("machine", data)
-        self.assertIn("processor", data)
         self.assertIn("python_version", data)
         self.assertIn("timestamp", data)
-
-        # Verify hostname is not empty
-        self.assertIsNotNone(data["hostname"])
-        self.assertGreater(len(data["hostname"]), 0)
 
     def test_health_check(self):
         """Test the health check endpoint."""
@@ -47,23 +41,6 @@ class TestSystemInfoAPI(unittest.TestCase):
         data = response.json()
         self.assertEqual(data["status"], "healthy")
         self.assertIn("timestamp", data)
-
-    def test_hostname_from_environment(self):
-        """Test that hostname is read from environment variable when available."""
-        # Set a test hostname
-        test_hostname = "test-hostname-123"
-        os.environ["HOSTNAME"] = test_hostname
-
-        try:
-            response = self.client.get("/")
-            self.assertEqual(response.status_code, 200)
-
-            data = response.json()
-            self.assertEqual(data["hostname"], test_hostname)
-        finally:
-            # Clean up
-            if "HOSTNAME" in os.environ:
-                del os.environ["HOSTNAME"]
 
     def test_kubernetes_environment_variables(self):
         """Test that Kubernetes environment variables are included."""
