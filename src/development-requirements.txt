@@ -6,3 +6,6 @@ flake8
 isort
 pre-commit
 pylint
+
+# Testing dependencies
+httpx

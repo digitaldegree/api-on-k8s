@@ -1,5 +1,7 @@
 # Use an official Python runtime as a parent image
 FROM python:3.13-slim
+ENV HOST=0.0.0.0
+ENV PORT=8000
 ENV WORKDIR=/work
 RUN mkdir /work
 

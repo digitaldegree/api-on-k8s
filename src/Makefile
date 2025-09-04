@@ -16,9 +16,13 @@ help:
 	@echo "  isort                    - sort imports with isort"
 	@echo "  test                     - run unit tests"
 	@echo "  build                    - build docker container"
+	@echo "  run                      - run the container"
 	@echo "  clean                    - clean up workspace and containers"
 
 all: requirements lint test build
+
+requirements:
+	pip install --quiet --upgrade --requirement requirements.txt
 
 development-requirements: requirements
 	pip install --quiet --upgrade --requirement development-requirements.txt
@@ -57,10 +61,13 @@ test:
 build:
 	docker build --tag $(APP):$(TAG) .
 
+run: build
+	docker run --rm --name $(APP) --publish 8000:8000 $(APP):$(TAG)
+
 clean:
 	docker container stop $(APP) || true
 	docker container rm $(APP) || true
 	@rm -rf ./__pycache__ ./tests/__pycache__ .ruff_cache
 	@rm -f .*~ *.pyc
 
-.PHONY: help requirements lint black isort test build clean development-requirements pre-commit-install pre-commit-run pre-commit-clean
+.PHONY: help requirements lint black isort test build run clean development-requirements pre-commit-install pre-commit-run pre-commit-clean
