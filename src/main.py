@@ -30,9 +30,9 @@ async def get_system_info():
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "environment": {
             "node_name": os.environ.get("NODE_NAME", "unknown"),
+            "pod_ip": os.environ.get("POD_IP", "unknown"),
             "pod_name": os.environ.get("POD_NAME", "unknown"),
             "pod_namespace": os.environ.get("POD_NAMESPACE", "unknown"),
-            "pod_ip": os.environ.get("POD_IP", "unknown"),
             "service_account": os.environ.get("SERVICE_ACCOUNT", "unknown"),
         },
     }
