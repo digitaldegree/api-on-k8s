@@ -22,6 +22,10 @@ class TestSystemInfoAPI(unittest.TestCase):
 
         # Check required fields
         self.assertIn("hostname", data)
+        self.assertIn("pod_name", data)
+        self.assertIn("pod_ip", data)
+        self.assertIn("node_name", data)
+        self.assertIn("instance_id", data)
         self.assertIn("platform", data)
         self.assertIn("system", data)
         self.assertIn("release", data)
@@ -30,15 +34,6 @@ class TestSystemInfoAPI(unittest.TestCase):
         self.assertIn("processor", data)
         self.assertIn("python_version", data)
         self.assertIn("timestamp", data)
-        self.assertIn("environment", data)
-
-        # Check environment fields
-        env = data["environment"]
-        self.assertIn("node_name", env)
-        self.assertIn("pod_name", env)
-        self.assertIn("pod_namespace", env)
-        self.assertIn("pod_ip", env)
-        self.assertIn("service_account", env)
 
         # Verify hostname is not empty
         self.assertIsNotNone(data["hostname"])
@@ -70,15 +65,13 @@ class TestSystemInfoAPI(unittest.TestCase):
             if "HOSTNAME" in os.environ:
                 del os.environ["HOSTNAME"]
 
-    def test_environment_variables(self):
+    def test_kubernetes_environment_variables(self):
         """Test that Kubernetes environment variables are included."""
         # Set test environment variables
         test_env = {
             "NODE_NAME": "test-node",
             "POD_NAME": "test-pod",
-            "POD_NAMESPACE": "test-namespace",
             "POD_IP": "10.0.0.1",
-            "SERVICE_ACCOUNT": "test-service-account",
         }
 
         # Store original values
@@ -92,13 +85,10 @@ class TestSystemInfoAPI(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
 
             data = response.json()
-            env = data["environment"]
 
-            self.assertEqual(env["node_name"], test_env["NODE_NAME"])
-            self.assertEqual(env["pod_name"], test_env["POD_NAME"])
-            self.assertEqual(env["pod_namespace"], test_env["POD_NAMESPACE"])
-            self.assertEqual(env["pod_ip"], test_env["POD_IP"])
-            self.assertEqual(env["service_account"], test_env["SERVICE_ACCOUNT"])
+            self.assertEqual(data["node_name"], test_env["NODE_NAME"])
+            self.assertEqual(data["pod_name"], test_env["POD_NAME"])
+            self.assertEqual(data["pod_ip"], test_env["POD_IP"])
         finally:
             # Restore original environment
             for key, value in original_env.items():
@@ -107,6 +97,20 @@ class TestSystemInfoAPI(unittest.TestCase):
                         del os.environ[key]
                 else:
                     os.environ[key] = value
+
+    def test_instance_id_uniqueness(self):
+        """Test that instance_id is generated and has correct format."""
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+
+        data = response.json()
+
+        # Check instance_id exists and has correct format
+        self.assertIn("instance_id", data)
+        instance_id = data["instance_id"]
+        self.assertIsInstance(instance_id, str)
+        self.assertEqual(len(instance_id), 8)  # Should be 8 characters
+        self.assertTrue(instance_id.isalnum())  # Should be alphanumeric
 
 
 if __name__ == "__main__":

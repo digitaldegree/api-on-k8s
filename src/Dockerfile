@@ -1,6 +1,6 @@
 # Use an official Python runtime as a parent image
 FROM python:3.13-slim
-LABEL org.opencontainers.image.description "A simple API"
+LABEL org.opencontainers.image.description="A simple API"
 ENV HOST=0.0.0.0
 ENV PORT=8000
 EXPOSE ${PORT}
