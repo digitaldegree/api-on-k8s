@@ -7,7 +7,7 @@ from fastapi import FastAPI
 
 app = FastAPI(
     title="System Info API",
-    description="A simple API that returns system information including hostname",
+    description="An API that returns system information.",
     version="1.0.0",
 )
 
@@ -18,10 +18,8 @@ async def get_system_info():
     Get system information including hostname and compute layer details.
     """
     return {
-        "host": os.environ.get("HOSTNAME"),
         "hostname": platform.node() or "unknown",
         "node_name": os.environ.get("NODE_NAME", "unknown"),
-        "pod_name": os.environ.get("POD_NAME", "unknown"),
         "pod_ip": os.environ.get("POD_IP", "127.0.0.1"),
         "platform": platform.platform(),
         "system": platform.system(),

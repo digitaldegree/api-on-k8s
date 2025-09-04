@@ -37,6 +37,9 @@ pre-commit-run:
 x_pre-commit-clean:
 	pre-commit uninstall
 
+apply:
+	kubectl apply -f ./config
+
 requirements development-requirements lint fmt black isort test build clean:
 	$(MAKE) -C ./src $@
 

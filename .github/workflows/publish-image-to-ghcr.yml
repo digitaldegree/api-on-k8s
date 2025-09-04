@@ -2,6 +2,12 @@ name: Build and Push Image
 
 on:
   push:
+    paths-ignore:
+      - '**.md'
+      - 'Makefile'
+      - '.gitignore'
+      - '.github/**'
+      - 'config/**'
   pull_request:
   workflow_dispatch:
 
