@@ -57,7 +57,7 @@ isort:
 	isort src/*.py
 
 test:
-	python -m unittest --verbose --failfast ./src
+	$(MAKE) -C ./src test
 
 build: lint test
 	docker build --tag $(APP):$(TAG) ./src
