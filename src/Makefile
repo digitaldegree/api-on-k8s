@@ -1,7 +1,5 @@
-APP = $(notdir $(CURDIR))
+APP = api
 TAG = $(shell echo "$$(date +%F)-$$(git rev-parse --short HEAD)")
-DOCKER_REPO = ghcr.io/managedkaos
-
 
 help:
 	@echo "Run make <target> where target is one of the following..."
@@ -56,7 +54,7 @@ isort:
 test:
 	python -m unittest --verbose --failfast
 
-build: lint test
+build:
 	docker build --tag $(APP):$(TAG) .
 
 clean:

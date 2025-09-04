@@ -22,19 +22,12 @@ help:
 
 all: requirements lint test build
 
-development-requirements: requirements
-	pip install --quiet --upgrade --requirement src/development-requirements.txt
-
-requirements:
-	pip install --quiet --upgrade --requirement src/requirements.txt
-
 pre-commit-install: development-requirements
 	pre-commit install
 	detect-secrets scan > .secrets.baseline
 
 pre-commit-update: development-requirements
 	pre-commit autoupdate
-	$(MAKE) pre-commit-run
 
 pre-commit-run: development-requirements
 	pre-commit run --all-files
@@ -42,30 +35,7 @@ pre-commit-run: development-requirements
 x_pre-commit-clean:
 	pre-commit uninstall
 
-lint:
-	flake8 --ignore=E501,E231 ./src/*.py
-	pylint --errors-only --disable=C0301 ./src/*.py
-	black --diff ./src/*.py
-	isort --check-only --diff ./src/*.py
-
-fmt: black isort
-
-black:
-	black src/*.py
-
-isort:
-	isort src/*.py
-
-test:
-	$(MAKE) -C ./src test
-
-build: lint test
-	docker build --tag $(APP):$(TAG) ./src
-
-clean:
-	docker container stop $(APP) || true
-	docker container rm $(APP) || true
-	@rm -rf ./__pycache__ ./tests/__pycache__ .ruff_cache
-	@rm -f .*~ *.pyc
+requirements development-requirements lint fmt black isort test build clean:
+	$(MAKE) -C ./src $@
 
 .PHONY: help requirements lint black isort test build clean development-requirements pre-commit-install pre-commit-run pre-commit-clean

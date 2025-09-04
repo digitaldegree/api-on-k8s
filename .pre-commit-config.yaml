@@ -24,7 +24,7 @@ repos:
 
   # Security checks
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.8.5
+    rev: 1.8.6
     hooks:
       - id: bandit
         args: ['--configfile', 'pyproject.toml', '-f', 'json', '-o', 'bandit-report.json']
@@ -32,7 +32,7 @@ repos:
 
   # Check for merge conflicts
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-merge-conflict
       - id: check-yaml
