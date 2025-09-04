@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: ghcr.io/digitaldegree/api-on-k8s:e2fe54d363cfa0106219062abfcdfd3702b56386
+          image: ghcr.io/digitaldegree/api-on-k8s:53a3b5822c422648be5af60f2db9f26f0a224de4
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
