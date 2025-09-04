@@ -4,10 +4,13 @@ on:
   push:
     paths-ignore:
       - '**.md'
-      - 'Makefile'
       - '.gitignore'
+      - '.yamllint'
+      - 'Makefile'
       - '.github/**'
       - 'config/**'
+      - 'LICENSE'
+      - 'pyproject.toml'
   pull_request:
   workflow_dispatch:
 

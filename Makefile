@@ -24,6 +24,10 @@ all: requirements pre-commit-run test build
 
 setup: development-requirements pre-commit-install
 
+lint:
+	$(MAKE) -C ./src lint
+	$(MAKE) -C ./config lint
+
 pre-commit-install:
 	pre-commit install
 	detect-secrets scan > .secrets.baseline
@@ -40,7 +44,7 @@ x_pre-commit-clean:
 apply:
 	kubectl apply -f ./config
 
-requirements development-requirements lint fmt black isort test build clean:
+requirements development-requirements fmt black isort test build clean:
 	$(MAKE) -C ./src $@
 
 .PHONY: help requirements lint black isort test build clean development-requirements pre-commit-install pre-commit-run pre-commit-clean

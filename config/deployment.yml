@@ -48,10 +48,10 @@ spec:
               cpu: "250m"      # Request a node where 1/4 vCPU is available
 
           securityContext:
-            allowPrivilegeEscalation: false # prevent sudo, etc.
-            privileged: false               # prevent acting like host root
+            allowPrivilegeEscalation: false  # prevent sudo, etc.
+            privileged: false                # prevent acting like host root
 
-      terminationGracePeriodSeconds: 30 # default is 30
+      terminationGracePeriodSeconds: 30  # default is 30
 
       # per-pod security context
       # enable seccomp and force non-root user
